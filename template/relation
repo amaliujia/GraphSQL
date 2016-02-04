@@ -1,0 +1,5 @@
+# directed graph schema
+TABLE GRAPH (src_id int, desc_id int, weight real)
+
+# matrix
+TABLE MATRIX (row_id int, col_id int, value real)
