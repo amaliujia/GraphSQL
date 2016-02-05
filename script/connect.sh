@@ -1,1 +1,1 @@
-psql postgres
+psql -d postgres

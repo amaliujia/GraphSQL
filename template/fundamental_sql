@@ -6,6 +6,12 @@ SELECT sum([vector table 1].value * [vector table 2].value) AS Dotproduct
 FROM [vector table 1] INNER JOIN [vector table 2]
 ON [vector table 1].id = [vector table 2].id;
 
+--- vector minus vector
+SELECT (COALESCE(A.value, 0) - COALESCE(B.value, 0)) AS diff
+FROM [TABLE_TEST] AS A
+FULL OUTER JOIN [TABLE_TEST_2] AS B
+ON A.id = B.id;
+
 -- Matrix Multiplication (A X B)
 SELECT A.row_id, B.col_id, sum(A.value * B.value)
 FROM [Matrix 1] AS A INNER JOIN [Matrix 2] AS B
@@ -76,3 +82,48 @@ CREATE VIEW graph_degree_dis_view AS
   ) AS degree_table
   GROUP BY degree
   ORDER BY degree ASC;
+
+--- Strongly Connected Component
+--- need one more relation vertex_column
+INSERT INTO [component_temp]
+  SELECT T.id, MIN(T.component_id) AS component_id
+  FROM (
+    SELECT G.src_id as id, MIN(C.component_id) AS component_id
+    FROM [graph table] AS G INNER JOIN [compenent] AS C
+    ON G.dest_id = C.id
+    GROUP BY G.src_id
+    UNION
+    SELECT * FROM [compenent]
+  ) AS T
+  GROUP BY T.id;
+
+
+----- Compute K-core
+CREATE TABLE UGRAPH (
+  src_id INT,
+  dst_id INT
+);
+
+CREATE TABLE CORENESS(
+  id  INT,
+  core INT
+);
+
+CREATE VIEW if_empty AS
+  SELECT COUNT(*) FROM UGRAPH;
+
+CREATE VIEW get_k_lt_node AS
+  SELECT TOP 1 src_id, out_degree
+  FROM graph_out_degree_view
+  WHERE graph_degree_dis_view.out_degree < k
+  ORDER BY graph_degree_dis_view.out_degree ASC;
+
+INSERT INTO CORENESS VALUES(
+  get_k_lt_node.src_id, k
+);
+
+DELETE FROM UGRAPH
+WHERE
+UGRAPH.src_id = get_k_lt_node.src_id
+OR
+UGRAPH.dst_id = get_k_lt_node.src_id;

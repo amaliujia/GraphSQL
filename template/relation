@@ -1,8 +1,14 @@
-# directed graph schema
+--- directed graph schema
 TABLE GRAPH (src_id int, desc_id int, weight real)
 
-# matrix
+--- matrix
 TABLE MATRIX (row_id int, col_id int, value real)
 
-# vector
+--- vector
 TABLE VECTOR (id INT, value REAL)
+
+--- vertex_connected_component
+TABLE vertex_connected_component(
+  id INT PRIMARY NOT NULL,
+  component_id INT
+)
