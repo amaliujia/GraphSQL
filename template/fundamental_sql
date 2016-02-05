@@ -24,20 +24,23 @@ INSERT INTO [un_graph](src_id, dest_id, weight)
   UNION ALL
   SELECT dest_id "src_id", src_id "dest_id", weight FROM [d_graph];
 
-  -- graph out degree
+-- graph out degree
+CREATE VIEW graph_out_degree_view AS
   SELECT A.src_id, count(*) AS out_degree
   FROM GRAPH_TEST  AS A
   GROUP BY A.src_id
   ORDER BY A.src_id ASC;
 
-  -- graph in degree
+-- graph in degree
+CREATE VIEW graph_in_degree_view AS
   SELECT A.dest_id, count(*) AS in_degree
   FROM GRAPH_TEST  AS A
   GROUP BY A.dest_id
   ORDER BY A.dest_id ASC;
 
 
-  -- graph in degree distribution
+-- graph in degree distribution
+CREATE VIEW graph_in_degree_dis_view AS
   SELECT degree_table.in_degree, count(*) AS count
   FROM (
     SELECT count(*) AS in_degree
@@ -48,7 +51,8 @@ INSERT INTO [un_graph](src_id, dest_id, weight)
   ORDER BY in_degree ASC;
 
 
-  -- graph out degree distribution
+-- graph out degree distribution
+CREATE VIEW graph_out_degree_dis_view AS
   SELECT out_degree, count(*) AS count
   FROM (
     SELECT count(*) AS out_degree
@@ -58,7 +62,8 @@ INSERT INTO [un_graph](src_id, dest_id, weight)
   GROUP BY out_degree
   ORDER BY out_degree ASC;
 
-  -- Degree distribution
+-- Degree distribution
+CREATE VIEW graph_degree_dis_view AS
   SELECT degree, count(*) AS count
   FROM (
     SELECT count(*) AS degree
