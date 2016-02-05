@@ -70,3 +70,5 @@ FROM (
 ) AS degree_table
 GROUP BY degree
 ORDER BY degree ASC;
+
+DROP TABLE IF EXISTS GRAPH_TEST;
