@@ -30,6 +30,16 @@ SELECT sum([vector table 1].value * [vector table 2].value) AS Dotproduct
 FROM [vector table 1] INNER JOIN [vector table 2]
 ON [vector table 1].id = [vector table 2].id;
 ```
+
+- vector substraction
+``` sql
+--- vector minus vector
+SELECT (COALESCE(A.value, 0) - COALESCE(B.value, 0)) AS diff
+FROM [TABLE_TEST] AS A
+FULL OUTER JOIN [TABLE_TEST_2] AS B
+ON A.id = B.id;
+``
+
 - Matrix Multiplication (A X B)
 ``` sql
 SELECT A.row_id, B.col_id, sum(A.value * B.value)
@@ -106,4 +116,21 @@ CREATE VIEW graph_degree_dis_view AS
   ) AS degree_table
   GROUP BY degree
   ORDER BY degree ASC;
+```
+
+### Connected Component
+```sql
+--- Strongly Connected Component
+--- need one more relation vertex_column
+INSERT INTO [component_temp]
+  SELECT T.id, MIN(T.component_id) AS component_id
+  FROM (
+    SELECT G.src_id as id, MIN(C.component_id) AS component_id
+    FROM [graph table] AS G INNER JOIN [compenent] AS C
+    ON G.dest_id = C.id
+    GROUP BY G.src_id
+    UNION
+    SELECT * FROM [compenent]
+  ) AS T
+  GROUP BY T.id;
 ```
