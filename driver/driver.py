@@ -12,7 +12,7 @@ def main():
         if db_instance == None:
             db_instance = db_connect()
 
-        kcore(db_instance, "/Users/amaliujia/Documents/github/GraphSQL/unit_test_sets/kcore_1.txt")
+        kcore_v2(db_instance, "/Users/amaliujia/Documents/github/GraphSQL/unit_test_sets/kcore_1.txt")
 
         if db_instance:
             db_disconnect(db_instance)

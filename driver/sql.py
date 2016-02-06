@@ -2,6 +2,7 @@
 def drop_table_if_exist(name=""):
     return "DROP TABLE IF EXISTS %s" % (name);
 
+
 def insert_table(name="", records=list(), schema={}):
     ret = "INSERT INTO %s VALUES(" % name
     content = ""
@@ -12,12 +13,25 @@ def insert_table(name="", records=list(), schema={}):
     content += ")"
     return ret + content
 
+
 def create_ugraph(src="", dst=""):
     ret = "INSERT INTO %s\n" % dst
     ret += "  SELECT src_id, dst_id FROM %s\n" % src
     ret += "  UNION\n"
     ret += "  SELECT dst_id AS src_id, src_id AS dst_id FROM %s" % src
     return ret
+
+
+def select_from(name="", target="", condition=""):
+    ret = "SELECT "
+    if target != "":
+        ret += "%s FROM %s" % (target, name)
+    else:
+        ret += "* FROM %s" % name
+    if condition != "":
+        ret += "\nWHERE %s" % condition
+    return ret
+
 
 def create_table(name="", schema={}):
     s1 = "CREATE TABLE %s(" % (name)
@@ -32,12 +46,58 @@ def create_table(name="", schema={}):
 
     return  s1 + s2 + s3
 
+def insert_out_degree(graph_name="", degree_name=""):
+    ret = "INSERT INTO %s (id, degree)\n" % degree_name
+    ret += graph_out_degree(graph_name)
+    return ret
+
+
+def graph_out_degree(name=""):
+    ret = "SELECT A.src_id, count(*) AS out_degree\n"
+    ret += " FROM %s AS A\n" % name
+    ret += " GROUP BY A.src_id\n"
+    ret += " ORDER BY A.src_id ASC"
+    return ret
+
+
+def graph_k_degree_top_one(name="", k=0):
+    ret = "SELECT src_id, out_degree\n"
+    ret += "  FROM (\n"
+    ret += graph_out_degree(name)
+    ret += "\n) AS N\n"
+    ret += "WHERE N.out_degree < %d\n" % k
+    ret += "ORDER BY N.out_degree ASC\n"
+    ret += "LIMIT 1"
+    return ret
+
+def graph_delete_node(name="", id=0):
+    request = "DELETE FROM %s\n" % name
+    request += "WHERE src_id=%d\n" % id
+    request += "OR\n"
+    request += "dst_id=%d" % id
+    return request
+
+def creat_index(name="", col=""):
+    request = "create index %s_%s on %s (%s)" % (name, col, name, col)
+    return request
 
 def main():
     print create_table("TEST", {"id":"INT", "value":"REAL"})
     print drop_table_if_exist("TEST")
     print insert_table("TEST", [1, 0.1])
-    print create_ugraph("src", "dst")
+    print create_ugraph("SRC", "DST")
+    print "\n"
+    print graph_out_degree("TEST")
+    print "\n"
+    print graph_k_degree_top_one("GRAPH", 2)
+    print "\n"
+    print graph_delete_node("GRAPH", 1)
+    print "\n"
+    print creat_index("GRAPH", "COL")
+    print "\n"
+    print insert_out_degree("GRAPH", "DEGREE")
+    print "\n"
+    print select_from("Table", "serc_id", "dest = 5")
 
 if __name__ == '__main__':
     main()
