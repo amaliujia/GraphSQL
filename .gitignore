@@ -2,3 +2,7 @@
 data/*
 
 *.pyc
+
+.idea/*
+
+.idea/vcs.xml

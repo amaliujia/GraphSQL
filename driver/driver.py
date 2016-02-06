@@ -1,6 +1,6 @@
 from database import *
 from sql import *
-from graphlib import hello
+from graphlib import *
 
 db_instance = None
 
