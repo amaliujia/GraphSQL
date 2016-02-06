@@ -25,9 +25,9 @@ ON A.col_id = B.id
 GROUP BY A.src_id
 
 -- retrieve undirected graph from directed graph
-INSERT INTO [un_graph](src_id, dest_id, weight)
+INSERT INTO [un_graph]
   SELECT src_id, dest_id, weight FROM [d_graph]
-  UNION ALL
+  UNION
   SELECT dest_id "src_id", src_id "dest_id", weight FROM [d_graph];
 
 -- graph out degree
