@@ -1,0 +1,17 @@
+1. Run
+      cd ./script
+      ./start.sh
+2. Run
+      python driver/driver.py <path_to_test_file>
+
+3. unit_test_sets directory contains all tests file.
+
+4. if you want see the result of tests.
+  Run
+     cd ./script/connect.sh
+
+     then SELECT * FROM coreness;
+
+5. Run following commands to stop postgres.
+    cd ./script
+    ./stop.sh

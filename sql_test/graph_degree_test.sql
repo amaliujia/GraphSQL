@@ -1,6 +1,3 @@
-
-
-
 -- graph out degree
 SELECT A.src_id, count(*) AS out_degree
 FROM GRAPH_TEST  AS A

@@ -1,6 +1,7 @@
 from database import *
 from sql import *
 from graphlib import *
+import sys
 
 db_instance = None
 
@@ -12,7 +13,7 @@ def main():
         if db_instance == None:
             db_instance = db_connect()
 
-        kcore(db_instance, "/Users/amaliujia/Documents/github/GraphSQL/unit_test_sets/kcore_1.txt")
+        kcore(db_instance, sys.argv[1])
 
         if db_instance:
             db_disconnect(db_instance)

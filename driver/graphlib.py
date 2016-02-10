@@ -10,6 +10,8 @@ def file_to_table(db_instance, name="", data_path=""):
     cursor = db_instance.cursor()
 
     for line in lines:
+        if line[0] == "#":
+            continue
         vertice = line.split(" ")
         i = insert_table(name, [int(vertice[0]), int(vertice[1])])
         cursor.execute(i)
