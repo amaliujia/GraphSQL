@@ -1,18 +1,19 @@
 from sql import *
 from util import *
+import time
 
 def hello():
     print "HELLO WORD"
 
 
 def file_to_table(db_instance, name="", data_path=""):
-    lines = [line.rstrip('\n') for line in open(data_path)]
+    lines = [line.rstrip('\r\n') for line in open(data_path)]
     cursor = db_instance.cursor()
 
     for line in lines:
         if line[0] == "#":
             continue
-        vertice = line.split(" ")
+        vertice = line.split("\t")
         i = insert_table(name, [int(vertice[0]), int(vertice[1])])
         cursor.execute(i)
     db_instance.commit()
@@ -140,8 +141,8 @@ def kcore_backup(db_instance, data_path=""):
     g1_index_op = creat_index(GRAPH_TABLE, "src_id")
     g1_index_op_2 = creat_index(GRAPH_TABLE, "dst_id")
     cursor.execute(g1)
-    cursor.execute(g1_index_op)
-    cursor.execute(g1_index_op_2)
+    #cursor.execute(g1_index_op)
+    #cursor.execute(g1_index_op_2)
     db_instance.commit()
     cursor.execute(g2)
     db_instance.commit()

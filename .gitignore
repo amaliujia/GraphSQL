@@ -6,3 +6,9 @@ data/*
 .idea/*
 
 .idea/vcs.xml
+
+test_data/soc-Epinions1.txt
+
+test_data/soc-Slashdot0811.txt
+
+nohup.out
