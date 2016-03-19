@@ -16,6 +16,9 @@ def main():
 
         if command == "kcore":
           kcore(db_instance, sys.argv[2])
+
+        if command == "degreedist":
+          degree_distribution(db_instance, sys.argv[2])
     except:
         print "Unexpected error:", sys.exc_info()
     finally: 

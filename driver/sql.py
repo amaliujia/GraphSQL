@@ -81,6 +81,22 @@ def creat_index(name="", col=""):
     request = "create index %s_%s on %s (%s)" % (name, col, name, col)
     return request
 
+def ugraph_insert_degree_distribution(dist_table="", graph=""):
+    request = "INSERT INTO %s (degree, count)\n" % dist_table
+    request += ugraph_degree_distriution(graph)
+    return request
+
+def ugraph_degree_distriution(name=""):
+    request = "SELECT degree, count(*)\n"
+    request += "FROM (\n"
+    request += "  SELECT count(*) AS degree\n"
+    request += "  FROM %s AS A\n" % name
+    request += "  GROUP BY A.dst_id\n"
+    request += ") AS degree_table\n"
+    request += "GROUP BY degree\n"
+    request += "ORDER BY degree ASC"
+    return request
+
 def main():
     print create_table("TEST", {"id":"INT", "value":"REAL"})
     print drop_table_if_exist("TEST")
@@ -98,6 +114,8 @@ def main():
     print insert_out_degree("GRAPH", "DEGREE")
     print "\n"
     print select_from("Table", "serc_id", "dest = 5")
+    print "\n"
+    print ugraph_insert_degree_distribution("degree_distr", "graph")
 
 if __name__ == '__main__':
     main()
