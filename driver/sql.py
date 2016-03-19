@@ -46,6 +46,7 @@ def create_table(name="", schema={}):
 
     return  s1 + s2 + s3
 
+
 def insert_out_degree(graph_name="", degree_name=""):
     ret = "INSERT INTO %s (id, degree)\n" % degree_name
     ret += graph_out_degree(graph_name)
@@ -70,6 +71,7 @@ def graph_k_degree_top_one(name="", k=0):
     ret += "LIMIT 1"
     return ret
 
+
 def graph_delete_node(name="", id=0):
     request = "DELETE FROM %s\n" % name
     request += "WHERE src_id=%d\n" % id
@@ -77,14 +79,39 @@ def graph_delete_node(name="", id=0):
     request += "dst_id=%d" % id
     return request
 
+
 def creat_index(name="", col=""):
     request = "create index %s_%s on %s (%s)" % (name, col, name, col)
     return request
+
 
 def ugraph_insert_degree_distribution(dist_table="", graph=""):
     request = "INSERT INTO %s (degree, count)\n" % dist_table
     request += ugraph_degree_distriution(graph)
     return request
+
+
+def graph_insert_degree_distribution(dist_table="", graph=""):
+    request = "INSERT INTO %s (degree, count)\n" % dist_table
+    request += ugraph_degree_distriution(graph)
+    return request
+
+
+def graph_degree_distriution(name=""):
+    request = "SELECT degree, count(*)\n"
+    request += "FROM (\n"
+    request += "  SELECT count(*) AS degree\n"
+    request += "  FROM %s AS A\n" % name
+    request += "  GROUP BY A.dst_id\n"
+    request += "  UNION ALL\n"
+    request += "  SELECT count(*) AS Degree\n"
+    request += "  FROM %s AS A\n" % name
+    request += "  GROUP BY A.src_id\n"
+    request += ") AS degree_table\n"
+    request += "GROUP BY degree\n"
+    request += "ORDER BY degree ASC"
+    return request
+
 
 def ugraph_degree_distriution(name=""):
     request = "SELECT degree, count(*)\n"
@@ -96,6 +123,7 @@ def ugraph_degree_distriution(name=""):
     request += "GROUP BY degree\n"
     request += "ORDER BY degree ASC"
     return request
+
 
 def main():
     print create_table("TEST", {"id":"INT", "value":"REAL"})
