@@ -84,6 +84,14 @@ def creat_index(name="", col=""):
     request = "create index %s_%s on %s (%s)" % (name, col, name, col)
     return request
 
+def create_clustered_index(name="", col=""):
+    request = "CLUSTER %s USING %s_%s" % (name, name, col)
+    return request
+
+def creat_index_on_two_columns(name="", col="", col2=""):
+    request = "create index %s_%s_%s on %s (%s, %s)" % (name, col, col2, name, col, col2)
+    return request
+
 
 def ugraph_insert_degree_distribution(dist_table="", graph=""):
     request = "INSERT INTO %s (degree, count)\n" % dist_table

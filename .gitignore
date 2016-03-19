@@ -12,3 +12,7 @@ test_data/soc-Epinions1.txt
 test_data/soc-Slashdot0811.txt
 
 nohup.out
+
+test_data/soc-LiveJournal1.txt
+
+test_data/twitter_combined.txt
