@@ -16,3 +16,9 @@ nohup.out
 test_data/soc-LiveJournal1.txt
 
 test_data/twitter_combined.txt
+
+test_data/com-youtube.ungraph.txt
+
+test_data/facebook_combined.txt
+
+logfile

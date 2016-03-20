@@ -90,7 +90,7 @@ def degree_distribution(db_instance ,data_path=""):
     db_instance.commit()
 
 
-def kcore(db_instance ,data_path=""):
+def kcore(db_instance ,data_path="", index=False, composite_index=False, clustering_index=False):
     cursor = db_instance.cursor()
 
     GRAPH_TABLE_TEST = "graph_temp_kecore"
@@ -110,19 +110,26 @@ def kcore(db_instance ,data_path=""):
 
     # # create a undirected graph
     ugraph(db_instance, GRAPH_TABLE_TEST, GRAPH_TABLE)
-    '''
+
     # build index on graph table
-    g1_index_op = creat_index_on_two_columns(GRAPH_TABLE, "dst_id", "src_id")
-    #g1_index_op_2 = creat_index(GRAPH_TABLE, "dst_id")
-    #g1_index_op_2_cluster = create_clustered_index(GRAPH_TABLE, "dst_id")
-    cursor.execute(g1_index_op)
-    #cursor.execute(g1_index_op_2)
-    #cursor.execute(g1_index_op_2_cluster)
-    db_instance.commit()
-    '''
+    if index == True:
+        index_op= creat_index(GRAPH_TABLE, "dst_id")
+        cursor.execute(index_op)
+    elif composite_index == True:
+        index_op = creat_index_on_two_columns(GRAPH_TABLE, "dst_id", "src_id")
+        cursor.execute(index_op)
+
+    if index == True and clustering_index == True:
+        index_op = create_clustered_index(GRAPH_TABLE, "dst_id")
+        cursor.execute(index_op)
+
+    if (index or composite_index or clustering_index):
+        db_instance.commit()
+
     # create coreness table
     CORENESS = "coreness"
     CORENESS_SCHEMA = {"id":"INT PRIMARY KEY", "core":"INT"}
+
     g3 = create_table(CORENESS, CORENESS_SCHEMA)
     cursor.execute(g3)
     db_instance.commit()
@@ -130,6 +137,7 @@ def kcore(db_instance ,data_path=""):
     # create degree table
     DEGREE_TABLE = "degree_table_kcore"
     DEGREE_SCHEMA = {"id":"INT PRIMARY KEY", "degree":"INT"}
+
     g4 = create_table(DEGREE_TABLE, DEGREE_SCHEMA)
     cursor.execute(g4)
     db_instance.commit()
@@ -138,7 +146,7 @@ def kcore(db_instance ,data_path=""):
     req = insert_out_degree(GRAPH_TABLE, DEGREE_TABLE)
     cursor.execute(req)
     db_instance.commit()
-    '''
+
     # read degree table into memory
     req = select_from(DEGREE_TABLE)
     cursor.execute(req)
@@ -177,7 +185,7 @@ def kcore(db_instance ,data_path=""):
                     degree_dict.pop(node[0], None)
                     insert_req = insert_table(CORENESS, [k-1, node[0]])
                     cursor.execute(insert_req)
-
+    db_instance.commit()
     req = drop_table_if_exist(GRAPH_TABLE_TEST)
     cursor.execute(req)
     req = drop_table_if_exist(GRAPH_TABLE)
@@ -187,7 +195,7 @@ def kcore(db_instance ,data_path=""):
     req = drop_table_if_exist(CORENESS)
     cursor.execute(req)
     db_instance.commit()
-    '''
+
 def main():
     lines = [line.rstrip('\r\n') for line in open("/Users/amaliujia/Documents/github/GraphSQL/unit_test_sets/kcore_1.txt")]
 
